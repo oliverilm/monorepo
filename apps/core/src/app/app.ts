@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { FastifyInstance } from 'fastify';
 import AutoLoad from '@fastify/autoload';
+import { sessionAuth } from './middleware/auth';
 
 /* eslint-disable-next-line */
 export interface AppOptions {}
@@ -20,8 +21,16 @@ export async function app(fastify: FastifyInstance, opts: AppOptions) {
 
   // This loads all plugins defined in routes
   // define your routes in one of these
+  
+  
+  // register public routes
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
+    dirNameRoutePrefix: true,
     options: { ...opts },
+    autoHooks: true,
+
   });
+
+
 }
