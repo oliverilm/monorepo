@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import App from "../app/app";
+import { LoginPage } from "../app/pages/login";
 
 const RouteEnum = {
     Index: "/",
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
             },
             {
                 path: RouteEnum.Login,
-                element: <div>Login</div>
+                element: <LoginPage />
             },
             {
                 path: RouteEnum.Register,
@@ -51,9 +52,3 @@ const router = createBrowserRouter([
 export function AppRouter() {
     return <RouterProvider router={router} />;
 }
-
-/*
-git remote add origin https://github.com/oliverilm/monorepo.git
-git branch -M main
-git push -u origin main
-*/
