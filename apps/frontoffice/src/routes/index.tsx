@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import App from "../app/app";
 import { LoginPage } from "../app/pages/login";
+import { Register } from "../app/pages/register";
 
 const RouteEnum = {
     Index: "/",
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
             },
             {
                 path: RouteEnum.Register,
-                element: <div>Register</div>
+                element: <Register />
             },
             {
                 path: RouteEnum.Dashboard,

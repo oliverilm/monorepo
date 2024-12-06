@@ -35,7 +35,4 @@ export default async function (fastify: FastifyInstance) {
         return user.createUser({ email: request.body.email, password: request.body.password});
     });
 
-    fastify.get("/auth/health", (request, reply) => {
-        return request.routerPath
-    })
 }

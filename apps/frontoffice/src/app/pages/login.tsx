@@ -1,19 +1,37 @@
 import { useState } from "react";
 import { login } from "../../api/auth";
+import { useForm } from "@mantine/form"
+import { Button, Input } from "@mantine/core"
+import { useUserStore } from "../../stores/user";
+import localStorage, { LocalStorageKey } from "../../services/local-storage";
+
 
 export function LoginPage() {
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [response, setResponse] = useState()
+    const form = useForm({
+        initialValues: {
+            email: "",
+            password: ""
+        }
+    })
+
+    const store = useUserStore()
+   
     
-    const onSubmit = async () => {
+    const onSubmit = async (values: typeof form.values) => {
         const response = await login(
-            { email, password }
+            values
         )
 
-        setResponse(response.data)
+        if ("token" in response.data) {
+            store.setIsAuthenticated(true)
+            localStorage.set(LocalStorageKey.Token, response.data.token)
+        }
     
+    }
+
+    if (store.isAuthenticated) {
+        return null;
     }
     return (
         <div className="flex flex-col items-center justify-center h-screen">
@@ -21,15 +39,13 @@ export function LoginPage() {
                 <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <h1 className="text-2xl font-bold mb-4">Login</h1>
                     
-                    <form onSubmit={onSubmit}>
-                    <input name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <input name="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    <form onSubmit={form.onSubmit(onSubmit)}>
+                    <Input name="email" {...form.getInputProps("email")} />
+                    <Input name="password" {...form.getInputProps("password")}/>
+                        <Button type="submit">
                             Login
-                        </button>
+                        </Button>
                     </form>
-
-                    {response && JSON.stringify(response)}
                 </div>
             </div>
         </div>
