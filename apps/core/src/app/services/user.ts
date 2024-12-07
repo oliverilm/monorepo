@@ -1,17 +1,15 @@
-import { PrismaClient, Session, User, UserProfile } from "@prisma/client"
+import { PrismaClient, Session,  UserProfile } from "@prisma/client"
 import securify from "./securify"
 import session from "./session"
-import { exclude } from "../utils/object"
-import { profile } from "console"
 
 const prisma = new PrismaClient()
 
-interface LoginCredentials {
+export interface LoginCredentials {
     email: string,
     password: string
 }
 
-interface AuthenticationPayload {
+export interface AuthenticationPayload {
     profile: UserProfile,
     token: Session["token"]
 }
@@ -58,21 +56,27 @@ class UserService {
         const user = await prisma.user.create({
             data: {
                 email,
-                password: securify.hashPassword(password)
+                password: securify.hashPassword(password),
             }
         })
 
-        const profile = await prisma.userProfile.create({
-            data: {
-                userId: user.id,
-            }
-        })
+        if (!user) {
+            throw new Error("something went wrong")
+        }
 
-        const token = (await session.createSession(user.id)).token
+        const [profile, sess] = await Promise.all([
+            prisma.userProfile.create({
+                data: {
+                    userId: user.id
+                }
+            }),
+            session.createSession(user.id)
+        ])
+
 
         return {
             profile, 
-            token
+            token: sess.token
         }
     }
 

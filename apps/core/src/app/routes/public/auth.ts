@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import user from '../../services/user';
+import user, { LoginCredentials } from '../../services/user';
+import typia from 'typia';
 
 // PUBLIC ENDPOINTS
 export default async function (fastify: FastifyInstance) {
@@ -14,9 +15,9 @@ export default async function (fastify: FastifyInstance) {
                 }
             }
         }
-    }, async function (request) {
-        // @ts-expect-error -- will fix
-        return user.login({ email: request.body.email, password: request.body.password});
+    }, (request) => {
+        const payload = typia.assert<LoginCredentials>(request.body)
+        return user.login(payload);
     });
 
     fastify.post('/auth/register', {
@@ -30,9 +31,9 @@ export default async function (fastify: FastifyInstance) {
                 }
             }
         }
-    }, async function (request) {
-        // @ts-expect-error -- will fix
-        return user.createUser({ email: request.body.email, password: request.body.password});
+    }, (request) => {
+        const payload = typia.assert<LoginCredentials>(request.body)
+        return user.createUser(payload);
     });
 
 }

@@ -7,8 +7,5 @@ export default async function (fastify: FastifyInstance) {
         return user.getUserProfile(request.userId)
     })
 
-    fastify.get("/health", (request) => {
-        return { health: true, userId: request.userId }
-    })
 }
 
