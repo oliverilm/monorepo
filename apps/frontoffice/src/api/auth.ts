@@ -1,4 +1,3 @@
-import { ExecFileSyncOptionsWithBufferEncoding } from "child_process";
 import { client } from "./instance";
 import { AxiosResponse } from "axios";
 

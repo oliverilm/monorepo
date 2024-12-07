@@ -24,6 +24,9 @@ export async function app(fastify: FastifyInstance, opts: AppOptions) {
     ],
   })
 
+
+  // TODO: add custom error handling 
+
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
     options: { ...opts },

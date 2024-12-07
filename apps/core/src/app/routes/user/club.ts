@@ -1,10 +1,11 @@
 import { FastifyInstance } from 'fastify';
 import club, { ClubCreate } from '../../services/club';
 import typia from "typia"
+import user from '../../services/user';
 
 // PRIVATE ENDPOINTS
 export default async function (fastify: FastifyInstance) {
-    fastify.get("/club/create", {
+    fastify.post("/club/create", {
         schema: {
             body: {
                 type: 'object',
@@ -17,7 +18,8 @@ export default async function (fastify: FastifyInstance) {
         }
     }, (request) => {
         const payload = typia.assert<ClubCreate>(request.body)
-        return club.create(payload)
+        const userId = typia.assert<{ userId: string}>(request)
+        return club.create({...payload, userId: userId.userId})
     })
 }
 

@@ -34,6 +34,8 @@ class UserService {
             }
         })
 
+        if (!profile) throw new Error("aaa")
+
         const token = (await session.createSession(user.id)).token
         
         return {
@@ -42,41 +44,48 @@ class UserService {
         }
     }
 
-    async getUserProfile(userId: string): Promise<UserProfile> {
+    async getUserProfile(userId: string): Promise<UserProfile | null> {
         const profile = await  prisma.userProfile.findUnique({
             where: {
-                id: userId
+                userId
             },
         })
 
         return profile
     }
 
-    async createUser({ email, password }: LoginCredentials): Promise<AuthenticationPayload> {
-        const user = await prisma.user.create({
-            data: {
-                email,
-                password: securify.hashPassword(password),
-            }
-        })
-
-        if (!user) {
-            throw new Error("something went wrong")
-        }
-
-        const [profile, sess] = await Promise.all([
-            prisma.userProfile.create({
+    async createUser({ email, password }: LoginCredentials): Promise<AuthenticationPayload | void> {
+        try {
+            const user = await prisma.user.create({
                 data: {
-                    userId: user.id
+                    email,
+                    password: securify.hashPassword(password),
                 }
-            }),
-            session.createSession(user.id)
-        ])
+            })
+
+            if (!user) {
+                throw new Error("something went wrong")
+            }
+
+            const [profile, sess] = await Promise.all([
+                prisma.userProfile.create({
+                    data: {
+                        userId: user.id
+                    }
+                }),
+                session.createSession(user.id)
+            ])
 
 
-        return {
-            profile, 
-            token: sess.token
+            return {
+                profile, 
+                token: sess.token
+            }
+        } catch (error) {
+            // @ts-expect-error --un
+            if (error.message.includes("Unique constraint")) {
+                throw new Error("Email already used")
+            }
         }
     }
 
