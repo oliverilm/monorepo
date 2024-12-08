@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import club, { ClubCreate } from '../../services/club';
 import typia from "typia"
-import user from '../../services/user';
 
 // PRIVATE ENDPOINTS
 export default async function (fastify: FastifyInstance) {

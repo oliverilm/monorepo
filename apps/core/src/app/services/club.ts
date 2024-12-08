@@ -8,8 +8,8 @@ export interface ClubCreate {
     country: string;
 }
 export interface SkipTake {
-    skip?: number;
-    take?: number
+    skip?: string | number;
+    take?: string | number
 }
 
 export type SlugOrId = {
@@ -84,8 +84,8 @@ class ClubService {
 
     getClubList({ take = 25, skip = 0 }: SkipTake): Promise<Club[]> {
         return prisma.club.findMany({
-            take,
-            skip,
+            take: Number(take),
+            skip: Number(skip),
             orderBy: {
                 id: "desc"
             }

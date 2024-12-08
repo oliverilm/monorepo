@@ -1,8 +1,6 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import { app } from '../src/app/app';
 import { PrismaClient } from '@prisma/client';
-import auth from '../src/app/routes/public/auth';
-import { OutgoingHttpHeader } from 'http';
 
 export let testServer: FastifyInstance;
 
@@ -16,21 +14,28 @@ async function cleanDb() {
         WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
         AND table_type='BASE TABLE'
     ` as { table_name: string }[]
+
     const tableNames = tables.reduce((acc, table) => {
         if (table.table_name.startsWith("_")) return acc
         return [...acc, table.table_name]
     }, [] as string[]) 
 
-    await client.$executeRawUnsafe(`TRUNCATE ${tableNames.map((name) => `public."${name}"`).join(", ")}`)
+    await client.$executeRawUnsafe(`TRUNCATE ${tableNames.map((name) => `public."${name}"`).join(", ")} CASCADE`)
 }
 
-beforeEach( async () => {
+
+
+beforeEach(async () => {
     await cleanDb()
 
     testServer = Fastify();
     testServer.register(app);
+    await sleep(500)
 });
 
+async function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 export const TEST_EMAIL = "testing@testing.com"
 export const TEST_PASSWORD = "testPassword"
@@ -44,6 +49,5 @@ export async function registerTestUserAndRetrieveToken(server: FastifyInstance):
             password: TEST_PASSWORD,
         },        
     });
-
     return response.json().token as string
 }
