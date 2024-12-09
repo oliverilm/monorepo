@@ -3,7 +3,7 @@ import App from "../app/app";
 import { LoginPage } from "../app/pages/login";
 import { Register } from "../app/pages/register";
 
-const RouteEnum = {
+export const RouteEnum = {
     Index: "/",
     Login: "/login",
     Register: "/register",

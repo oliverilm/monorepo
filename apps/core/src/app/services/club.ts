@@ -59,8 +59,6 @@ class ClubService {
                 }
             })
         }
-        console.log({ club })
-
         return club || null
     }
 

@@ -1,7 +1,7 @@
 import { registerTestUserAndRetrieveToken, TEST_EMAIL, TEST_PASSWORD, testServer } from '../../../integration-init';
 
 describe('Public auth related endpoints', () => {
-  it('should respond with error if user is not registered', async () => {
+  test('should respond with error if user is not registered', async () => {
     const response = await testServer.inject({
       method: 'POST',
       url: '/public/auth/login',
@@ -18,7 +18,7 @@ describe('Public auth related endpoints', () => {
     });
   });
 
-  it('Should create a new user', async () => {
+  test('Should create a new user', async () => {
     const email = `${new Date().getTime()}@email.com`;
     const response = await testServer.inject({
       url: '/public/auth/register',
@@ -45,15 +45,17 @@ describe('Public auth related endpoints', () => {
     });
   });
 
-  it('should not allow duplicate email user to register', async () => {
-    await registerTestUserAndRetrieveToken(testServer)
+  test('should not allow duplicate email user to register', async () => {
+    await registerTestUserAndRetrieveToken()
     const response = await testServer.inject({
       url: '/public/auth/register',
       method: 'POST',
       payload: {
-        email: TEST_EMAIL,
+
         password: TEST_PASSWORD,
+        email: TEST_EMAIL,
       },
+
     });
 
     expect(response.json()).toStrictEqual({
@@ -63,8 +65,8 @@ describe('Public auth related endpoints', () => {
     });
   });
 
-  it('should be able to log in with a valid user', async () => {
-    await registerTestUserAndRetrieveToken(testServer)
+  test('should be able to log in with a valid user', async () => {
+    await registerTestUserAndRetrieveToken()
     const response = await testServer.inject({
       url: '/public/auth/login',
       method: 'POST',

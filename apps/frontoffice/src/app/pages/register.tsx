@@ -1,4 +1,4 @@
-import { Button, Flex, Input } from "@mantine/core"
+import { Button, Flex, Input, Text } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { register } from "../../api/auth"
 import localStorage, { LocalStorageKey } from "../../services/local-storage"
@@ -29,6 +29,7 @@ export function Register() {
     }
     return (
         <form onSubmit={form.onSubmit(onSubmit)}>
+            <Text size="xl" fw={"bold"} >Register</Text>
             <Flex direction={"column"}>
                 <Input {...form.getInputProps("email")} />
                 <Input {...form.getInputProps("password")} />

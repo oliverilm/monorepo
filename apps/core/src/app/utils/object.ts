@@ -1,5 +1,5 @@
 
-export function exclude<T, Key extends keyof T>(
+export function exclude<T extends Record<string, unknown>, Key extends keyof T>(
     user: T,
     keys: Key[]
   ): Omit<T, Key> {

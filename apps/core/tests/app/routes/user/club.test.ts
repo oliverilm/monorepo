@@ -5,8 +5,10 @@ import {
 import { getTestUserProfile } from '../../../utils/user';
 
 describe('User Club related actions', () => {
-  it('should be able to create a club with a unique name', async () => {
-    const token = await registerTestUserAndRetrieveToken(testServer);
+  test('should be able to create a club with a unique name', async () => {
+    const token = await registerTestUserAndRetrieveToken();
+
+    console.log({token})
     const response = await testServer.inject({
       method: 'POST',
       url: '/user/club/create',
@@ -33,19 +35,9 @@ describe('User Club related actions', () => {
     expect(profile?.clubId).toBe(response.json().id);
   });
 
-  it('should not be able to create a club if user is already in a club', async () => {
-    const token = await registerTestUserAndRetrieveToken(testServer);
-    const response = await testServer.inject({
-      method: 'POST',
-      url: '/user/club/create',
-      payload: {
-        name: 'unique club',
-        country: 'EE',
-      },
-    });
-  });
+  test.todo('should not be able to create a club if user is already in a club');
 
-  it('should not be able to create a club if user is not logged in', async () => {
+  test('should not be able to create a club if user is not logged in', async () => {
     const response = await testServer.inject({
       method: 'POST',
       url: '/user/club/create',
@@ -64,7 +56,7 @@ describe('User Club related actions', () => {
     );
   });
 
-  it('should not be able to create a club with a duplicate name', async () => {
+  test('should not be able to create a club with a duplicate name', async () => {
     expect(true);
   });
 });

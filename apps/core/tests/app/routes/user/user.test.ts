@@ -1,8 +1,8 @@
 import { registerTestUserAndRetrieveToken, testServer } from '../../../integration-init';
 
 describe('user routes', () => {
-  it('should be able to fetch user profile with authenticated session', async () => {
-    const token = await registerTestUserAndRetrieveToken(testServer);
+  test('should be able to fetch user profile with authenticated session', async () => {
+    const token = await registerTestUserAndRetrieveToken();
     const response = await testServer.inject({
       method: 'GET',
       url: '/user/profile',
@@ -10,6 +10,7 @@ describe('user routes', () => {
         Authorization: `Bearer ${token}`,
       },
     });
+
 
     expect(response.json()).toStrictEqual(
       {

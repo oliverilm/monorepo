@@ -1,36 +1,27 @@
-import styled from 'styled-components';
 
 import { Outlet } from 'react-router-dom';
-import { useUserStore } from '../stores/user';
-import { useEffect, useLayoutEffect } from 'react';
-import localStorage, { LocalStorageKey } from '../services/local-storage';
+import { Box } from '@mantine/core';
+import { Header } from './components/header/Header';
+import { useAppAuthState } from './hooks/useAppAuthState';
 
-const StyledApp = styled.div`
-  // Your style here
-`;
 
 export function App() {
-  const store = useUserStore()
-
-  useLayoutEffect(() => {
-    const tokenFromLocalStorage = localStorage.get(LocalStorageKey.Token)
-
-    if (tokenFromLocalStorage) {
-      // validate tokens validity
-      store.setIsAuthenticated(true)
-      return;
-    }
-
-    store.setIsAuthenticated(false)
-    return;
-  }, [])
+  useAppAuthState()
   
   return (
-    <StyledApp>
-      {/* <NxWelcome title="frontoffice" /> */}
-      {store.isAuthenticated ? "AUTH" : ""}
+    <Box 
+      w={"100%"}  
+      px={{
+          base: "md",
+          sm: "xs",
+          md: "md",
+          lg: "md",
+          xl: "md"
+        }}
+    >
+      <Header />
       <Outlet />
-    </StyledApp>
+    </Box>
   );
 }
 

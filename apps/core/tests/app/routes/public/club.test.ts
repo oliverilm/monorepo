@@ -4,7 +4,7 @@ import { slugifyString } from "../../../../src/app/utils/string"
 
 describe("Public auth", () => {
 
-    it("Should fetch the list of clubs", async () => {
+    test("Should fetch the list of clubs", async () => {
         const prisma = new PrismaClient()
 
         await prisma.club.createMany({

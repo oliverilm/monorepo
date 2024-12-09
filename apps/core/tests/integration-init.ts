@@ -1,6 +1,7 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import { app } from '../src/app/app';
 import { PrismaClient } from '@prisma/client';
+import user from '../src/app/services/user';
 
 export let testServer: FastifyInstance;
 
@@ -20,17 +21,17 @@ async function cleanDb() {
         return [...acc, table.table_name]
     }, [] as string[]) 
 
-    await client.$executeRawUnsafe(`TRUNCATE ${tableNames.map((name) => `public."${name}"`).join(", ")} CASCADE`)
+    return await client.$executeRawUnsafe(`TRUNCATE ${tableNames.map((name) => `public."${name}"`).join(", ")} CASCADE`)
 }
 
 
 
 beforeEach(async () => {
-    await cleanDb()
-
-    testServer = Fastify();
-    testServer.register(app);
-    await sleep(500)
+    await sleep(1000)
+    return cleanDb().then(() => {
+        testServer = Fastify();
+        testServer.register(app);
+    })
 });
 
 async function sleep(ms: number) {
@@ -40,14 +41,10 @@ async function sleep(ms: number) {
 export const TEST_EMAIL = "testing@testing.com"
 export const TEST_PASSWORD = "testPassword"
 
-export async function registerTestUserAndRetrieveToken(server: FastifyInstance): Promise<string> {
-    const response = await server.inject({
-        url: '/public/auth/register',
-        method: 'POST',
-        payload: {
-            email: TEST_EMAIL,
-            password: TEST_PASSWORD,
-        },        
-    });
-    return response.json().token as string
+export async function registerTestUserAndRetrieveToken(): Promise<string> {
+    const created = await user.createUser({ email: TEST_EMAIL, password: TEST_PASSWORD})
+    if (created) {
+        return created.token
+    }
+    return ""
 }
