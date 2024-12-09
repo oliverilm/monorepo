@@ -8,6 +8,7 @@ export const RouteEnum = {
     Index: "/",
     Login: "/login",
     Register: "/register",
+    CreateClub: "/create-club",
     Dashboard: "/dashboard",
     Profile: "/profile",
     Settings: "/settings",
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: RouteEnum.Login,
                 element: <LoginPage />
+            },
+            {
+                path: RouteEnum.CreateClub,
+                element: <div>create club</div>
             },
             {
                 path: RouteEnum.Register,

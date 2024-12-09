@@ -1,17 +1,16 @@
 import { useUserStore } from "../../stores/user"
+import { PublicHome } from "./home/public-home"
+import { UserHome } from "./home/user-home"
 
 export function Home() {
     const stores = useUserStore()
-    if (stores.isAuthenticated && stores.user) {
-        return (
-            <pre>
-                {JSON.stringify(stores.user, null, 2)}
-            </pre>
-        )
-    }
+
+
+   
     return (
         <div>
-            not authenticated
+            {stores.isAuthenticated ? <UserHome /> : <PublicHome />}
+            
         </div>
     )
 }
