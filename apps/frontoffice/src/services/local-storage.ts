@@ -11,6 +11,10 @@ class LocalStorage {
     set(key: LocalStorageKey, value: string) {
         localStorage.setItem(key, value)
     }
+
+    remove(key: LocalStorageKey) {
+        localStorage.removeItem(key)
+    }
 }
 
 export default new LocalStorage()

@@ -1,8 +1,9 @@
-import { Flex } from "@mantine/core";
+import { Button, Flex, Text } from "@mantine/core";
 import { RouteEnum } from "../../../routes";
 import { useUserStore } from "../../../stores/user";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate, useRoutes } from "react-router-dom";
 import styled from "styled-components";
+import localStorage, { LocalStorageKey } from "../../../services/local-storage";
 
 const HeaderFlex = styled.header`
     display: flex;
@@ -13,29 +14,37 @@ const HeaderFlex = styled.header`
 
 export function Header() {
     const store = useUserStore()
+
+    const navigate = useNavigate()
+
+    function logout() {
+        localStorage.remove(LocalStorageKey.Token)
+        store.setIsAuthenticated(false)
+        navigate(RouteEnum.Index)
+    }
+
+    
     return (
         <HeaderFlex>
-            <Link to={RouteEnum.Index}>
-                Brand
-            </Link>
-
-            {store.isAuthenticated ? (
-                <Flex>
-                    <Link to={RouteEnum.Index}>
+                <Text>Brand</Text>
+            <Flex gap={"md"} align={"center"}>
+                {store.isAuthenticated ? (
+                    <Button variant="transparent" onClick={logout}>
                         Logout
-                    </Link>
-                </Flex>
-            ) : (
-                <Flex gap={"md"}>
-                    <Link to={RouteEnum.Login}>
-                        Login
-                    </Link>
+                    </Button>
+                ) : (
+                    <>
+                        <Link to={RouteEnum.Login}>
+                            Sign in
+                        </Link>
 
-                    <Link to={RouteEnum.Register}>
-                        Register
-                    </Link>
-                </Flex>
-            )}
+                        <Button onClick={() => navigate(RouteEnum.Register)} >
+                            Sign up
+                        </Button>
+                        </>
+                )}
+            </Flex>
+
         </HeaderFlex>
     )
 }

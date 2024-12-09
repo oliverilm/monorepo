@@ -3,10 +3,12 @@ import { useForm } from "@mantine/form"
 import { Button, Input } from "@mantine/core"
 import { useUserStore } from "../../stores/user";
 import localStorage, { LocalStorageKey } from "../../services/local-storage";
+import { useNavigate } from "react-router-dom";
+import { RouteEnum } from "../../routes";
 
 
 export function LoginPage() {
-
+    const navigate = useNavigate()
     const form = useForm({
         initialValues: {
             email: "",
@@ -15,7 +17,6 @@ export function LoginPage() {
     })
 
     const store = useUserStore()
-   
     
     const onSubmit = async (values: typeof form.values) => {
         const response = await login(
@@ -25,6 +26,7 @@ export function LoginPage() {
         if ("token" in response.data) {
             store.setIsAuthenticated(true)
             localStorage.set(LocalStorageKey.Token, response.data.token)
+            navigate(RouteEnum.Index)
         }
     
     }

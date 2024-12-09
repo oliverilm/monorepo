@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import App from "../app/app";
 import { LoginPage } from "../app/pages/login";
 import { Register } from "../app/pages/register";
+import { Home } from "../app/pages/home";
 
 export const RouteEnum = {
     Index: "/",
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: RouteEnum.Index,
-                element: <div>Index</div>
+                element: <Home />
             },
             {
                 path: RouteEnum.Login,

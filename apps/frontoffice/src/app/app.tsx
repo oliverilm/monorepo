@@ -1,7 +1,8 @@
 
 import { Outlet } from 'react-router-dom';
-import { Box } from '@mantine/core';
+import { AppShell, Box } from '@mantine/core';
 import { Header } from './components/header/Header';
+import { Notifications } from "@mantine/notifications"
 import { useAppAuthState } from './hooks/useAppAuthState';
 
 
@@ -9,7 +10,12 @@ export function App() {
   useAppAuthState()
   
   return (
-    <Box 
+    <AppShell header={{ height: 60 }}>
+      <AppShell.Header>
+        <Header />
+      </AppShell.Header>
+      <AppShell.Main>
+      <Box 
       w={"100%"}  
       px={{
           base: "md",
@@ -19,9 +25,12 @@ export function App() {
           xl: "md"
         }}
     >
-      <Header />
+      <Notifications />
       <Outlet />
     </Box>
+      </AppShell.Main>
+    </AppShell>
+    
   );
 }
 

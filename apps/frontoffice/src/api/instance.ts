@@ -1,5 +1,6 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import localStorage, { LocalStorageKey } from "../services/local-storage"
+import { notifications } from "@mantine/notifications"
 
 export const client = axios.create({
   baseURL: "http://localhost:3000",
@@ -19,3 +20,13 @@ client.interceptors.request.use((config) => {
         }
     }
 })
+
+
+function tryParseKnownErrors(error: AxiosError<{ statusCode: number, error: string, message: string }>) {
+    if (error.response?.data?.message) {
+        notifications.show({
+            message: error.response?.data?.message
+        })
+    }
+}
+client.interceptors.response.use((value) => value, tryParseKnownErrors)
