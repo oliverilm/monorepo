@@ -1,7 +1,9 @@
 import { PrismaClient, Session,  UserProfile } from "@prisma/client"
 import securify from "./securify"
 import session from "./session"
-import { NationalId } from "@monorepo/utils"
+import { NationalId, NationalIDUtils } from "@monorepo/utils"
+import { capitalizeFirstLetter } from "../utils/string"
+import { tryHandleKnownErrors } from "../utils/error"
 
 const prisma = new PrismaClient()
 
@@ -100,19 +102,55 @@ class UserService {
         }
     }
 
-    async updateUserProfile(payload: UserPatchPayload): Promise<UserProfile> {
+    async updateUserProfile(payload: UserPatchPayload): Promise<UserProfile | null> {
         const { userId, ...rest } = payload
 
-        const profile = await prisma.userProfile.update({
-            where: {
-                userId
-            },
-            data: {
-                ...rest
+        // validate national id with its type and b-day
+        if (rest.nationalIdType && rest.nationalId) {
+            let parsed = null;
+            if (rest.nationalIdType === NationalId.Est) {
+                parsed = NationalIDUtils.parseEstonianIdCode(rest.nationalId)
+            } else {
+                parsed = NationalIDUtils.parseFinnishIdCode(rest.nationalId)
             }
-        })
 
-        return profile
+            if (!parsed) {
+                throw new Error("Invalid national id")
+            }
+
+            // validate b day with national id
+            const dateOfBirth = new Date(rest.dateOfBirth)
+            const { meta: { fullBirthYear }, birthMonth, birthDay } = parsed
+
+            if (!(
+                fullBirthYear === dateOfBirth.getFullYear() 
+                && Number(birthMonth) === dateOfBirth.getMonth() 
+                && Number(birthDay) === dateOfBirth.getDate()
+            )) {
+                throw new Error("Date of birth does not match the national id code")
+            }
+        }
+
+
+        try {
+            const profile = await prisma.userProfile.update({
+                where: {
+                    userId
+                },
+                data: {
+                    firstName: capitalizeFirstLetter(rest.firstName),
+                    lastName: capitalizeFirstLetter(rest.lastName),
+                    nationalId: rest.nationalId,
+                    nationalIdType: rest.nationalIdType,
+                    dateOfBirth: new Date(rest.dateOfBirth)
+                }
+            })
+
+            return profile
+        } catch (error) {
+            tryHandleKnownErrors(error as Error)
+            return null;
+        }
     }
 
 }

@@ -1,9 +1,7 @@
-class AppError extends Error {
-    EmailAlreadyUsed = "EMAIL_ALREADY_USED"
 
-    emailAlreadyUsed(message: string) {
-        throw new AppError(message)
+export function tryHandleKnownErrors(error: Error) {
+    if (error.message.toLowerCase().includes("unique")) {
+        throw new Error("Unique constraint failed")
     }
-
-
+    throw error
 }

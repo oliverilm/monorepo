@@ -41,8 +41,8 @@ async function sleep(ms: number) {
 export const TEST_EMAIL = "testing@testing.com"
 export const TEST_PASSWORD = "testPassword"
 
-export async function registerTestUserAndRetrieveToken(): Promise<string> {
-    const created = await user.createUser({ email: TEST_EMAIL, password: TEST_PASSWORD})
+export async function registerTestUserAndRetrieveToken(override: { email?: string } = {}): Promise<string> {
+    const created = await user.createUser({ email: TEST_EMAIL, password: TEST_PASSWORD, ...override})
     if (created) {
         return created.token
     }

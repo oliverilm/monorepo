@@ -5,6 +5,7 @@ import dayjs from "dayjs"
 import { useState } from "react";
 import { ID_OPTIONS, idValidator, monthNames, UserForm, years } from "./UserPersonalInfoModalForm.utils";
 import { NationalId } from "@monorepo/utils";
+import { updateUserProfile } from "../../../../api/user";
 
 
 export function UserPersonalInfoModalForm() {
@@ -59,8 +60,22 @@ export function UserPersonalInfoModalForm() {
     const daysInMonth = new Array(dayjs(combineFormDate()).daysInMonth()).fill("").map((_, i) => (i+1).toString())
     const months = monthNames.map((name, index) => ({ label: name, value: index.toString() }))
 
+    const onSubmit = async (values: typeof form.values) => {
+        const { day, month, year, ...rest } = values
+         
+        const response = await updateUserProfile({
+            ...rest, 
+            dateOfBirth: new Date(Number(year), Number(month), Number(day)) 
+        })
+        
+        if (response.data) {
+            stores.setUser(response.data)
+            onClose()
+        }
+    }
     return (
         <Modal title="Personal info" opened={isNeedingDataUpdate} onClose={onClose} closeButtonProps={{ display: "none"}}>
+            <form onSubmit={form.onSubmit(onSubmit)}>
                 <Stepper active={active} onStepClick={setActive}>
                     <Stepper.Step
                         label="Name"
@@ -98,7 +113,8 @@ export function UserPersonalInfoModalForm() {
                     </Button>
                     <Button fullWidth onClick={() => handleStepChange(active + 1)}>Next step</Button>
                 </Flex>
-        
+                {/* TODO: add submit button */}
+                </form>
             </Modal>
     )
 }

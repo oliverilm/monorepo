@@ -1,0 +1,78 @@
+model Competition {
+    id      String @id @default(cuid())
+    name    String @unique
+    slug    String // calculated from name
+
+    clubName    String
+
+    categories CompetitionCategory[]
+
+    @@unique([id, name])
+    @@index(clubName)
+    @@index(slug)
+}
+
+model Category {
+    id      Int @id @default(autoincrement())
+
+    value   String
+
+    competitionCategories CompetitionCategory[]
+    @@unique([id, value])
+}
+
+enum CompetitionCategorySex {
+    Male
+    Female
+    Unisex
+}
+
+
+model CompetitionCategory {
+    id      Int @id @default(autoincrement())
+
+    weights String[]
+    largestYearAllowed Int
+    smallestYearAllowed Int
+    sex CompetitionCategorySex
+
+    competition Competition? @relation(fields: [competitionId, competitionName], references: [id, name]) 
+    competitionId String
+    competitionName String
+    
+    category Category @relation(fields: [categoryId, categoryName], references: [id, value])
+    categoryId Int 
+    categoryName String
+
+    competitors Competitor[]
+
+    @@unique([id, competitionId, competitionName])
+    @@index(competitionId)
+    @@index(categoryId)
+}
+
+model Competitor {
+    id      Int @id @default(autoincrement())
+
+
+    clubName    String
+
+    profile     UserProfile @relation(fields: [profileId, firstName, lastName], references: [id, firstName, lastName])
+    profileId   String
+    firstName   String
+    lastName    String
+
+    competitionCategory CompetitionCategory @relation(fields: [competitionCategoryId, competitionId, competitionName], references: [id, competitionId, competitionName])
+    competitionCategoryId Int
+    competitionId String 
+    competitionName String
+
+    weight String
+
+
+    @@index(competitionId)
+    @@index(weight)
+    @@index(profileId)
+    @@index(clubName)
+
+}
