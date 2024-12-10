@@ -94,6 +94,10 @@ const parseEstonianIdCode = (idCode: string) => {
     };
 };
 
+const parseLatvianId = (idCode: string) => {
+    throw new Error("Latvian id code not implemented yet")
+}
+
 const parseFinnishIdCode = (idCode: string) => {
     const finnishIdCodeRegExp =
         // @ts-expect-error -- will fix

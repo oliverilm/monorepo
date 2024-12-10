@@ -1,15 +1,12 @@
 import { Club, PrismaClient } from "@prisma/client";
 import { slugifyString } from "../utils/string";
+import { SkipTake } from "../utils/types";
 
 const prisma = new PrismaClient()
 
 export interface ClubCreate {
     name: string;
     country: string;
-}
-export interface SkipTake {
-    skip?: string | number;
-    take?: string | number
 }
 
 export type SlugOrId = {
