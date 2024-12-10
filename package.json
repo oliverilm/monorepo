@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prepare": "ts-patch install && typia patch"
+    "prepare": "ts-patch install && typia patch",
+    "postinstall": "cd apps/core && npx prisma migrate && npx prisma generate"
   },
   "private": true,
   "dependencies": {

@@ -9,8 +9,8 @@ export function Home() {
    
     return (
         <div>
+            {stores.isAuthenticated}
             {stores.isAuthenticated ? <UserHome /> : <PublicHome />}
-            
         </div>
     )
 }

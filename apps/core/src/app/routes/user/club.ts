@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import club, { ClubCreate } from '../../services/club';
 import typia from "typia"
+import { getAssertedUserIdFromRequest } from '../../utils/request';
 
 // PRIVATE ENDPOINTS
 export default async function (fastify: FastifyInstance) {
@@ -17,8 +18,7 @@ export default async function (fastify: FastifyInstance) {
         }
     }, (request) => {
         const payload = typia.assert<ClubCreate>(request.body)
-        const userId = typia.assert<{ userId: string}>(request)
-        return club.create({...payload, userId: userId.userId})
+        return club.create({...payload, userId: getAssertedUserIdFromRequest(request)})
     })
 }
 

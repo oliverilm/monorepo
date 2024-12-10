@@ -10,14 +10,13 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {},
+    "paths": {
+      "@monorepo/utils": ["packages/utils/src/index.ts"]
+    },
     "plugins": [
       {
         "transform": "typia/lib/transform"
@@ -26,8 +25,5 @@
     "strictNullChecks": true,
     "strict": true
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

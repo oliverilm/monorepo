@@ -31,7 +31,7 @@ export default async function (fastify: FastifyInstance) {
                 }
             }
         }
-    }, (request) => {
+    }, async (request) => {
         const payload = typia.assert<LoginCredentials>(request.body)
         return user.createUser(payload);
     });

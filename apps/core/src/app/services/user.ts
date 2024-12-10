@@ -1,6 +1,7 @@
 import { PrismaClient, Session,  UserProfile } from "@prisma/client"
 import securify from "./securify"
 import session from "./session"
+import { NationalId } from "@monorepo/utils"
 
 const prisma = new PrismaClient()
 
@@ -12,6 +13,15 @@ export interface LoginCredentials {
 export interface AuthenticationPayload {
     profile: UserProfile,
     token: Session["token"]
+}
+
+export interface UserPatchPayload {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    nationalIdType: NationalId;
+    nationalId: string;
+    dateOfBirth: string;
 }
 
 
@@ -76,7 +86,6 @@ class UserService {
                 session.createSession(user.id)
             ])
 
-
             return {
                 profile, 
                 token: sess.token
@@ -86,7 +95,24 @@ class UserService {
             if (error.message.includes("Unique constraint")) {
                 throw new Error("Email already used")
             }
+
+            throw error
         }
+    }
+
+    async updateUserProfile(payload: UserPatchPayload): Promise<UserProfile> {
+        const { userId, ...rest } = payload
+
+        const profile = await prisma.userProfile.update({
+            where: {
+                userId
+            },
+            data: {
+                ...rest
+            }
+        })
+
+        return profile
     }
 
 }

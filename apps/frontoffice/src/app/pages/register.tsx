@@ -3,9 +3,13 @@ import { useForm } from "@mantine/form"
 import { register } from "../../api/auth"
 import localStorage, { LocalStorageKey } from "../../services/local-storage"
 import { useUserStore } from "../../stores/user"
+import { useNavigate } from "react-router-dom"
+import { RouteEnum } from "../../routes"
 
 export function Register() {
     const store = useUserStore()
+    const navigate = useNavigate()
+    
     const form = useForm({
         initialValues: {
             email: "",
@@ -20,6 +24,7 @@ export function Register() {
         if ("token" in response.data) {
             localStorage.set(LocalStorageKey.Token, response.data.token)
             store.setIsAuthenticated(true)
+            navigate(RouteEnum.Index)
         }
     }
 
