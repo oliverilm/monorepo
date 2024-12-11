@@ -1,7 +1,8 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import { app } from '../src/app/app';
 import { PrismaClient } from '@prisma/client';
-import user from '../src/app/services/user';
+import user, { AuthenticationPayload } from '../src/app/services/user';
+import club from '../src/app/services/club';
 
 export let testServer: FastifyInstance;
 
@@ -40,11 +41,35 @@ async function sleep(ms: number) {
 
 export const TEST_EMAIL = "testing@testing.com"
 export const TEST_PASSWORD = "testPassword"
+export const TEST_CLUB_NAME = "test_club"
 
-export async function registerTestUserAndRetrieveToken(override: { email?: string } = {}): Promise<string> {
-    const created = await user.createUser({ email: TEST_EMAIL, password: TEST_PASSWORD, ...override})
-    if (created) {
-        return created.token
+type AddonFunction = "withClub"
+
+const addonFunctions: Record<AddonFunction, (createdUserResponseWithToken: AuthenticationPayload) => Promise<void>> = {
+    withClub: async (createdUserResponseWithToken: AuthenticationPayload) => {
+        if (createdUserResponseWithToken.profile.userId) {
+            await club.create({country: "EE", name: TEST_CLUB_NAME, userId: createdUserResponseWithToken.profile.userId})
+        }
     }
-    return ""
 }
+
+interface Overrides {
+    email?: string,
+    addons?: Partial<Record<AddonFunction, boolean>>
+}
+
+export async function registerTestUserAndRetrieveToken(override: Overrides = {}): Promise<string> {
+    const created = await user.createUser({ email: TEST_EMAIL, password: TEST_PASSWORD, ...override})
+    if (!created) return ""
+
+    if (Object.entries(override?.addons ?? {}).length > 0) {
+        for (const [addon, enabled] of Object.entries(override.addons ?? {})) {
+            if (enabled && addonFunctions[addon as keyof typeof addonFunctions]) {
+                await addonFunctions[addon as keyof typeof addonFunctions](created)
+            }
+        }
+    }
+
+    return created.token
+}
+

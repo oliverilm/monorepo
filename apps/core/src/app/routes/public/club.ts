@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import club, { SkipTake } from '../../services/club';
+import club from '../../services/club';
 import typia from 'typia';
+import { SkipTake } from '../../utils/types';
 
 // PUBLIC ENDPOINTS
 export default async function (fastify: FastifyInstance) {
