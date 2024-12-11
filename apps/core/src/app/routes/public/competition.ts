@@ -5,7 +5,7 @@ import { CompetitionService } from '../../services/competition';
 
 // PUBLIC ENDPOINTS
 export default async function (fastify: FastifyInstance) {
-    fastify.get("/competitions", (request) => {
+    fastify.get("/competition/list", (request) => {
         const skipTake = typia.assert<SkipTake & SearchQueryParam>(request.query)
         return CompetitionService.list(skipTake)
     })
