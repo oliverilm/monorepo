@@ -1,7 +1,7 @@
 import { PrismaClient, Session,  UserProfile } from "@prisma/client"
 import securify from "./securify"
 import session from "./session"
-import { NationalId, NationalIDUtils } from "@monorepo/utils"
+import { NationalId, NationalIDUtils } from "@monorepo/utilities";
 import { capitalizeFirstLetter } from "../utils/string"
 import { tryHandleKnownErrors } from "../utils/error"
 
