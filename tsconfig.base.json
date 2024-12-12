@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@monorepo/utilities": ["packages/utilities/src/index.ts"],
       "@monorepo/utils": ["packages/utils/src/index.ts"]
     },
     "plugins": [

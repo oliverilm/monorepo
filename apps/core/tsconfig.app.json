@@ -16,7 +16,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "tests/app/app.spec.ts"
+    "tests/**/*.spec.ts",
+    "tests/**/*.test.ts",
   ],
   "exclude": [
     "jest.config.ts",

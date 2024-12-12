@@ -1,3 +1,4 @@
+import { SkipTake } from "./types";
 
 export function exclude<T extends Record<string, unknown>, Key extends keyof T>(
     user: T,
@@ -8,3 +9,9 @@ export function exclude<T extends Record<string, unknown>, Key extends keyof T>(
     ) as Omit<T, Key>
   }
   
+export function convertSkipTake({skip, take}: SkipTake): {skip: number, take: number} {
+  return {
+    skip: Number(skip),
+    take: Number(take)
+  }
+}

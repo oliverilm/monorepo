@@ -4,7 +4,7 @@ import { useUserStore } from "../../../../stores/user";
 import dayjs from "dayjs"
 import { useState } from "react";
 import { ID_OPTIONS, idValidator, monthNames, UserForm, years } from "./UserPersonalInfoModalForm.utils";
-import { NationalId } from "@monorepo/utils";
+import { NationalId } from "@monorepo/utilities";
 import { updateUserProfile } from "../../../../api/user";
 
 

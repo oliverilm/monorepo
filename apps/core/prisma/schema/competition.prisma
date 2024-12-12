@@ -1,14 +1,30 @@
 model Competition {
     id      String @id @default(cuid())
     name    String @unique
-    slug    String // calculated from name
+    slug    String @unique // calculated from name
 
     clubName    String
+    isPublished Boolean @default(false)
+    isArchived  Boolean @default(false)
+
+    description String?
+    startingAt  DateTime? @db.Date
+    location    String?
+
+    additionalInfo Json?
 
     categories CompetitionCategory[]
 
-    @@unique([id, name])
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    camp Camp?
+    
+    @@unique([id, name, slug])
+
+    @@index([isPublished, isArchived, slug])
     @@index(clubName)
+    @@index(name)
     @@index(slug)
 }
 
@@ -27,7 +43,6 @@ enum CompetitionCategorySex {
     Unisex
 }
 
-
 model CompetitionCategory {
     id      Int @id @default(autoincrement())
 
@@ -36,9 +51,10 @@ model CompetitionCategory {
     smallestYearAllowed Int
     sex CompetitionCategorySex
 
-    competition Competition? @relation(fields: [competitionId, competitionName], references: [id, name]) 
+    competition Competition? @relation(fields: [competitionId, competitionName, competitionSlug], references: [id, name, slug]) 
     competitionId String
     competitionName String
+    competitionSlug String
     
     category Category @relation(fields: [categoryId, categoryName], references: [id, value])
     categoryId Int 
@@ -46,14 +62,13 @@ model CompetitionCategory {
 
     competitors Competitor[]
 
-    @@unique([id, competitionId, competitionName])
+    @@unique([id, competitionId, competitionName, competitionSlug])
     @@index(competitionId)
     @@index(categoryId)
 }
 
 model Competitor {
     id      Int @id @default(autoincrement())
-
 
     clubName    String
 
@@ -62,12 +77,16 @@ model Competitor {
     firstName   String
     lastName    String
 
-    competitionCategory CompetitionCategory @relation(fields: [competitionCategoryId, competitionId, competitionName], references: [id, competitionId, competitionName])
+    competitionCategory CompetitionCategory @relation(fields: [competitionCategoryId, competitionId, competitionName, competitionSlug], references: [id, competitionId, competitionName, competitionSlug])
     competitionCategoryId Int
     competitionId String 
     competitionName String
+    competitionSlug String
 
     weight String
+
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime? @updatedAt
 
 
     @@index(competitionId)
